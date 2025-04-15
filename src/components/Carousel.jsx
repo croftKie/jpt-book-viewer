@@ -1,3 +1,4 @@
+import { animated, useSpring } from "@react-spring/three";
 import { IceCream } from "./Beach/IceCream";
 import { Palm } from "./Beach/Palm";
 import { VolleyBall } from "./Beach/VolleyBall";
@@ -6,20 +7,51 @@ import Cannon from "./Food/Cannon";
 import { HotDog } from "./Food/HotDog";
 import { TargetStand } from "./Food/TargetStand";
 import { BookCase } from "./Haunted/BookCase";
-import { Cauldron } from "./Haunted/Cauldron";
-import { Fence } from "./Haunted/Fence";
-import { Witch } from "./Haunted/Witch";
 import { FerrisWheel } from "./Park/FerrisWheel";
 import { Podium } from "./Park/Podium";
 import { ShipLight } from "./Park/ShipLight";
+import { ThreePictureBook } from "./Three_picture_books";
+
+const STEP_DUR = 3000;
 
 export const Carousel = (props) => {
+  const { carouselRotation } = useSpring({
+    from: {
+      carouselRotation: 0,
+    },
+    to: [
+      {
+        carouselRotation: -Math.PI / 2,
+        delay: STEP_DUR,
+      },
+      {
+        carouselRotation: -Math.PI,
+        delay: STEP_DUR,
+      },
+      {
+        carouselRotation: -1.5 * Math.PI,
+        delay: STEP_DUR,
+      },
+      {
+        carouselRotation: -2 * Math.PI,
+        delay: STEP_DUR,
+      },
+    ],
+    config: {
+      mass: 5,
+      tension: 400,
+      friction: 50,
+    },
+    loop: true,
+    immediate: true,
+  });
+
   return (
     <>
       <group rotation-y={-Math.PI / 4} position-y={-0.01}>
-        <group>
+        <animated.group rotation-y={carouselRotation}>
           <mesh position={[0, -2, 0]}>
-            <meshStandardMaterial color={"white"} />
+            <meshStandardMaterial color={"#D6D6D6"} />
             <cylinderBufferGeometry args={[12, 12, 4, 64]} />
           </mesh>
           <mesh scale={[1, 6, 24]} position-y={3}>
@@ -62,39 +94,31 @@ export const Carousel = (props) => {
               rotation-y={-Math.PI / 8}
             />
           </>
-          {/* HAUNTED */}
-          <>
-            <Witch
-              position={[-4, 3, -5]}
-              scale={[1.6, 1.6, 1.6]}
-              rotation-y={Math.PI * 1.25}
-            />
-            <BookCase
-              position={[-7, 0, -1.5]}
-              scale={[2, 2, 2]}
-              rotation-y={Math.PI}
-            />
-            <Fence
-              position={[-7.5, 2, -7.5]}
-              scale={[1.6, 1.6, 1.6]}
-              rotation-y={Math.PI / 4}
-            />
-            <Cauldron position={[-2.8, 1, -8]} scale={[1.9, 1.9, 1.9]} />
-          </>
           {/* BEACH */}
           <>
-            <Palm scale={[3, 3, 3]} position={[-1, 0, 1]} />
+            <Palm scale={[3, 3, 3]} position={[-1, 0, -6]} />
             <Palm
               scale={[2.8, 2.6, 2.6]}
-              position={[-7, 0, 0]}
+              position={[-7, 0, -5]}
               rotation-y={Math.PI / 6}
             />
-            <VolleyBall />
-            <IceCream position={[-10, 4, 3]} scale={[3, 3, 3]} />
-            <IceCream position={[-8, 4, 8]} scale={[3, 3, 3]} />
-            <IceCream position={[-3, 4, 10]} scale={[3, 3, 3]} />
+            <VolleyBall position={[-1, 0, -14]} />
           </>
-        </group>
+          {/* Book */}
+          <>
+            <BookCase
+              scale={[3, 3, 3]}
+              position={[-4, 6, 3]}
+              rotation-y={Math.PI / 1.2}
+            />
+            <ThreePictureBook
+              position={[-6.5, 2, 7]}
+              rotation-y={Math.PI / -5}
+              rotation-x={Math.PI / -10}
+              rotation-z={Math.PI / -10}
+            />
+          </>
+        </animated.group>
       </group>
     </>
   );
